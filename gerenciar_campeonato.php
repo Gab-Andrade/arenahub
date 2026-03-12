@@ -41,7 +41,7 @@ $stmt_aprovados = $pdo->prepare("
     SELECT t.id, t.nome 
     FROM inscricoes i 
     JOIN times t ON i.time_id = t.id 
-    WHERE i.campeonato_id = ? AND i.status = 'aprovada'
+    WHERE i.campeonato_id = ? AND (i.status = 'aprovada' OR i.status = 'aprovado')
     ORDER BY t.nome ASC
 ");
 $stmt_aprovados->execute([$campeonato_id]);
