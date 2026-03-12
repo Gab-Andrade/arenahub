@@ -8,7 +8,6 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['perfil'] !== 'organizador') {
     exit;
 }
 
-// Verifica se o ID do campeonato foi passado na URL
 if (!isset($_GET['id'])) {
     header("Location: criar_campeonato.php");
     exit;
@@ -17,20 +16,19 @@ if (!isset($_GET['id'])) {
 $campeonato_id = $_GET['id'];
 $organizador_id = $_SESSION['usuario_id'];
 
-// Busca as informações exclusivas DESTE campeonato e garante que pertence a este organizador
+// Busca as informações exclusivas DESTE campeonato
 $stmt = $pdo->prepare("SELECT * FROM campeonatos WHERE id = ? AND organizador_id = ?");
 $stmt->execute([$campeonato_id, $organizador_id]);
 $campeonato = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Se tentar acessar um ID de campeonato que não existe ou que é de outro organizador:
 if (!$campeonato) {
     header("Location: criar_campeonato.php");
     exit;
 }
 
-// Opcional: Buscar as inscrições (vamos usar isso em breve)
+// BUSCA AS INSCRIÇÕES E OS NOMES DOS TIMES
 $stmt_inscricoes = $pdo->prepare("
-    SELECT i.id, i.status, t.nome AS nome_time 
+    SELECT i.id AS inscricao_id, i.status, t.nome AS nome_time 
     FROM inscricoes i 
     JOIN times t ON i.time_id = t.id 
     WHERE i.campeonato_id = ?
@@ -38,6 +36,11 @@ $stmt_inscricoes = $pdo->prepare("
 $stmt_inscricoes->execute([$campeonato_id]);
 $inscricoes = $stmt_inscricoes->fetchAll(PDO::FETCH_ASSOC);
 
+$mensagem = '';
+if (isset($_SESSION['mensagem'])) {
+    $mensagem = $_SESSION['mensagem'];
+    unset($_SESSION['mensagem']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,10 +58,21 @@ $inscricoes = $stmt_inscricoes->fetchAll(PDO::FETCH_ASSOC);
         h2 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-top: 0; }
         .voltar { display: block; text-align: center; color: #7f8c8d; text-decoration: none; font-weight: bold; margin-top: 20px; }
         .voltar:hover { color: #2c3e50; }
+        .msg { text-align: center; font-weight: bold; margin-bottom: 15px; }
         
         /* Lista de times pendentes */
         ul { list-style: none; padding: 0; }
         li { background: #ecf0f1; padding: 15px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .time-nome { font-weight: bold; font-size: 18px; color: #2c3e50; }
+        .status-badge { padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; color: white; }
+        .status-pendente { background-color: #f39c12; }
+        .status-aprovada { background-color: #27ae60; }
+        
+        .acoes form { display: inline-block; margin-left: 5px; }
+        .btn-aprovar { background: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-aprovar:hover { background: #2ecc71; }
+        .btn-recusar { background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-recusar:hover { background: #c0392b; }
     </style>
 </head>
 <body>
@@ -67,15 +81,45 @@ $inscricoes = $stmt_inscricoes->fetchAll(PDO::FETCH_ASSOC);
         <div class="cabecalho-torneio">
             <h1><?php echo htmlspecialchars($campeonato['nome']); ?></h1>
             <p><strong>Modalidade:</strong> <?php echo htmlspecialchars($campeonato['modalidade']); ?></p>
-            <p><strong>Período:</strong> <?php echo date('d/m/Y', strtotime($campeonato['data_inicio'])); ?> até <?php echo date('d/m/Y', strtotime($campeonato['data_fim'])); ?></p>
             <p><strong>Vagas preenchidas:</strong> <?php echo count($inscricoes); ?> / <?php echo $campeonato['limite_times']; ?></p>
         </div>
 
         <div class="card">
             <h2>Times Inscritos</h2>
+            
+            <?php if ($mensagem) echo "<div class='msg'>$mensagem</div>"; ?>
+
             <ul>
                 <?php if (count($inscricoes) > 0): ?>
-                    <p>Você tem times aguardando aprovação!</p>
+                    <?php foreach ($inscricoes as $inscricao): ?>
+                        <li>
+                            <div>
+                                <span class="time-nome"><?php echo htmlspecialchars($inscricao['nome_time']); ?></span>
+                                <br>
+                                <span class="status-badge status-<?php echo $inscricao['status']; ?>">
+                                    <?php echo strtoupper($inscricao['status']); ?>
+                                </span>
+                            </div>
+
+                            <div class="acoes">
+                                <?php if ($inscricao['status'] === 'pendente'): ?>
+                                    <form action="processa_aprovacao.php" method="POST">
+                                        <input type="hidden" name="inscricao_id" value="<?php echo $inscricao['inscricao_id']; ?>">
+                                        <input type="hidden" name="campeonato_id" value="<?php echo $campeonato_id; ?>">
+                                        <input type="hidden" name="acao" value="aprovar">
+                                        <button type="submit" class="btn-aprovar">Aprovar</button>
+                                    </form>
+                                    
+                                    <form action="processa_aprovacao.php" method="POST">
+                                        <input type="hidden" name="inscricao_id" value="<?php echo $inscricao['inscricao_id']; ?>">
+                                        <input type="hidden" name="campeonato_id" value="<?php echo $campeonato_id; ?>">
+                                        <input type="hidden" name="acao" value="recusar">
+                                        <button type="submit" class="btn-recusar" onclick="return confirm('Tem certeza que deseja recusar este time?');">Recusar</button>
+                                    </form>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
                 <?php else: ?>
                     <li style="justify-content: center; color: #7f8c8d;">Nenhum time solicitou inscrição ainda.</li>
                 <?php endif; ?>
