@@ -46,9 +46,7 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['perfil'] !== 'organizador') {
 
         <div class="menu-grid">
             <a href="criar_campeonato.php" class="card-menu">Criar / Gerenciar Campeonatos</a>
-            <a href="#" class="card-menu">Aprovar Inscrições</a>
-            <a href="#" class="card-menu">Agendar Partidas</a>
-            <a href="#" class="card-menu">Atualizar Placares</a>
+            <a href="agendar_partidas.php" class="card-menu">Agendar Partidas</a>
         </div>
 
     </div>
