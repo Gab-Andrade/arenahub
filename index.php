@@ -55,7 +55,6 @@ require_once 'motor_index.php';
     <div class="navbar">
         <h1>Arena<span>Hub</span></h1>
         <div class="nav-links">
-            <a href="cadastro.php">Cadastrar</a>
             <a href="login.php" class="btn-login">Login do Sistema</a>
         </div>
     </div>
