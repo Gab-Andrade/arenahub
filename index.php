@@ -114,7 +114,7 @@ require_once 'motor_index.php';
                                 <div class="jogo-card">
                                     <div class="jogo-header">
                                         <span>📅 <?php echo date('d/m/Y \à\s H:i', strtotime($jogo['data_hora'])); ?></span>
-                                        <span>📍 Local: Quadra Principal</span>
+
                                         <?php if ($finalizado): ?>
                                             <span class="status-badge bg-verde">Encerrado</span>
                                         <?php else: ?>
