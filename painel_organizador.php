@@ -44,10 +44,11 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['perfil'] !== 'organizador') {
             <p>Aqui você tem o controle total: crie campeonatos, aprove times e atualize os placares.</p>
         </div>
 
-        <div class="menu-grid">
-            <a href="criar_campeonato.php" class="card-menu">Criar / Gerenciar Campeonatos</a>
-            <a href="agendar_partidas.php" class="card-menu">Agendar Partidas</a>
-        </div>
+    <div class="menu-grid">
+        <a href="criar_campeonato.php" class="card-menu">Criar / Gerenciar Campeonatos</a>
+        <a href="agendar_partidas.php" class="card-menu">Agendar Partidas</a>
+        <a href="atualizar_placares.php" class="card-menu">Atualizar Placares</a>
+    </div>
 
     </div>
 
