@@ -16,18 +16,41 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['perfil'] !== 'organizador') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Organizador - ArenaHub</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; }
-        header { background-color: #2c3e50; color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
-        .btn-sair { background-color: #e74c3c; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; }
+        :root {
+            --bg-body: #f4f7f6;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --accent-header: #2c3e50;
+            --accent-danger: #e74c3c;
+            --accent-blue: #3498db;
+        }
+
+        body.dark-theme {
+            --bg-body: #121212;
+            --text-main: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --card-bg: #1f2933;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            --accent-header: #111827;
+            --accent-danger: #e74c3c;
+            --accent-blue: #2980b9;
+        }
+
+        body { font-family: Arial, sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 0; transition: background-color 0.2s ease, color 0.2s ease; }
+        header { background-color: var(--accent-header); color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .btn-sair { background-color: var(--accent-danger); color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; }
         .btn-sair:hover { background-color: #c0392b; }
         .container { width: 90%; max-width: 1000px; margin: 30px auto; }
         
         /* Destaque azul para diferenciar visualmente do painel do capitão */
-        .boas-vindas { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid #3498db; }
+        .boas-vindas { background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: var(--card-shadow); margin-bottom: 20px; border-left: 5px solid var(--accent-blue); }
         
         .menu-grid { display: flex; gap: 20px; flex-wrap: wrap; }
-        .card-menu { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex: 1; min-width: 200px; text-align: center; text-decoration: none; color: #2c3e50; font-weight: bold; border-top: 4px solid #3498db; transition: transform 0.2s; }
+        .card-menu { background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: var(--card-shadow); flex: 1; min-width: 200px; text-align: center; text-decoration: none; color: var(--text-main); font-weight: bold; border-top: 4px solid var(--accent-blue); transition: transform 0.2s; }
         .card-menu:hover { transform: translateY(-5px); }
+
     </style>
 </head>
 <body>
