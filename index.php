@@ -39,8 +39,9 @@ require_once 'motor_index.php';
         .jogo-card { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .jogo-header { display: flex; justify-content: space-between; font-size: 12px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
         .jogo-times { display: flex; justify-content: center; align-items: center; gap: 20px; }
-        .time-nome { font-size: 16px; font-weight: bold; color: #2c3e50; flex: 1; text-align: right; }
-        .time-nome.visitante { text-align: left; }
+        .time-nome { font-size: 16px; font-weight: bold; color: #2c3e50; flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+        .time-nome.visitante { text-align: left; justify-content: flex-start; }
+        .time-logo { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1px solid #ecf0f1; }
         
         .placar-box { background: #34495e; color: white; padding: 5px 15px; border-radius: 4px; font-size: 20px; font-weight: bold; letter-spacing: 2px; }
         .x-agendado { font-weight: bold; color: #bdc3c7; }
@@ -88,7 +89,12 @@ require_once 'motor_index.php';
                                 ?>
                                     <tr>
                                         <td class="<?php echo ($pos == 1) ? 'pos-1' : ''; ?>"><?php echo $pos; ?>º</td>
-                                        <td class="time-col"><?php echo htmlspecialchars($time_rank['nome']); ?></td>
+                                        <td class="time-col">
+                                            <?php if (!empty($time_rank['logo'])): ?>
+                                                <img class="time-logo" src="<?php echo htmlspecialchars($time_rank['logo']); ?>" alt="Escudo de <?php echo htmlspecialchars($time_rank['nome']); ?>">
+                                            <?php endif; ?>
+                                            <?php echo htmlspecialchars($time_rank['nome']); ?>
+                                        </td>
                                         <td style="font-weight: bold;"><?php echo $time_rank['pontos']; ?></td>
                                         <td><?php echo $time_rank['jogos']; ?></td>
                                         <td><?php echo $time_rank['vitorias']; ?></td>
@@ -123,7 +129,12 @@ require_once 'motor_index.php';
                                     </div>
                                     
                                     <div class="jogo-times">
-                                        <div class="time-nome"><?php echo htmlspecialchars($jogo['time_a']); ?></div>
+                                        <div class="time-nome">
+                                            <?php if (!empty($jogo['logo_a'])): ?>
+                                                <img class="time-logo" src="<?php echo htmlspecialchars($jogo['logo_a']); ?>" alt="Escudo de <?php echo htmlspecialchars($jogo['time_a']); ?>">
+                                            <?php endif; ?>
+                                            <?php echo htmlspecialchars($jogo['time_a']); ?>
+                                        </div>
                                         
                                         <?php if ($finalizado): ?>
                                             <div class="placar-box"><?php echo $jogo['placar_a']; ?> - <?php echo $jogo['placar_b']; ?></div>
@@ -131,7 +142,12 @@ require_once 'motor_index.php';
                                             <div class="x-agendado">X</div>
                                         <?php endif; ?>
 
-                                        <div class="time-nome visitante"><?php echo htmlspecialchars($jogo['time_b']); ?></div>
+                                        <div class="time-nome visitante">
+                                            <?php if (!empty($jogo['logo_b'])): ?>
+                                                <img class="time-logo" src="<?php echo htmlspecialchars($jogo['logo_b']); ?>" alt="Escudo de <?php echo htmlspecialchars($jogo['time_b']); ?>">
+                                            <?php endif; ?>
+                                            <?php echo htmlspecialchars($jogo['time_b']); ?>
+                                        </div>
                                     </div>
                                 </div>
                             <?php 
